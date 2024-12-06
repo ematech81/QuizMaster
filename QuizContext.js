@@ -68,8 +68,7 @@ const QuizProvider = ({ children }) => {
     { id: '3', name: 'Science', icon: 'flask' },
     { id: '4', name: 'History', icon: 'book' },
     { id: '5', name: 'Art', icon: 'palette' },
-    { id: '6', name: 'Music', icon: 'music' },
-    { id: '7', name: 'Technology', icon: 'laptop' },
+    { id: '6', name: 'Technology', icon: 'laptop'},
   ]);
   // function to clear storage
 
@@ -84,7 +83,7 @@ const QuizProvider = ({ children }) => {
     };
 
     // Call the clearStorage function when the component mounts
-    //clearStorage()
+    // clearStorage()
   }, []);
 
   // Sign-up function
@@ -119,36 +118,37 @@ const signUp = async (username, email, password) => {
 
 
   // Sign-in function
-  const signIn = async (email, password) => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
 
-      // Fetch user data from Firestore using email
-      const userDocRef = doc(db, 'users', email);
-      const userDoc = await getDoc(userDocRef);
+const signIn = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-      
+    // Fetch user data from Firestore using email
+    const userDocRef = doc(db, 'users', email);
+    const userDoc = await getDoc(userDocRef);
+
     if (!userDoc.exists()) {
-      throw new Error('auth/invalid-credential'); // Custom error
+      throw { code: 'auth/user-not-found' }; // Throwing a custom error for user not found
     }
 
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        console.log('User data:', userData);
+    const userData = userDoc.data();
+    console.log('User data:', userData);
 
-        // Store username in state (assuming setUsername is defined)
-        setUsername(userData.username || 'Unknown');
-      }else {
-        // console.log('No user data found in Firestore for this email');
-      }
-    } catch (error) {
-      console.error('Error signing in:', error);
-    }
-  };
+    // Store username in state (assuming setUsername is defined)
+    setUsername(userData.username || 'Unknown');
+  } catch (error) {
+    console.error('Error signing in:', error);
+    throw error; // Re-throw the error for the calling function to handle
+  }
+};
+
+
+
+
 
   // sign out function
   const logOut = async () => {
@@ -541,10 +541,10 @@ const signUp = async (username, email, password) => {
       await saveUserStatsAsync(updatedStats);
 
       // Log the formatted time
-      console.log(
-        'Time spent in hh:mm:ss format:',
-        formatTime(updatedTimeSpent)
-      );
+      // console.log(
+      //   'Time spent in hh:mm:ss format:',
+      //   formatTime(updatedTimeSpent)
+      // );
       console.log('Updated stats with timeSpent:', updatedStats);
     } catch (error) {
       console.error('Error updating timeSpent:', error);
@@ -554,37 +554,43 @@ const signUp = async (username, email, password) => {
 
   // Function to save daily earnings
 
-  const saveDailyEarnings = async () => {
-    try {
-      const currentDate = new Date().toISOString().split('T')[0];
-      let earningsData = await AsyncStorage.getItem('dailyEarnings');
-      earningsData = earningsData ? JSON.parse(earningsData) : [];
+const saveDailyEarnings = async () => {
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    let earningsData = await AsyncStorage.getItem('dailyEarnings');
+    earningsData = earningsData ? JSON.parse(earningsData) : [];
 
-      const todayIndex = earningsData.findIndex(
-        (entry) => entry.date === currentDate
-      );
-      const previousEarnings =
-        todayIndex >= 0 ? earningsData[todayIndex].earnings : 0;
+    // Check if today's entry already exists
+    const todayIndex = earningsData.findIndex(
+      (entry) => entry.date === currentDate
+    );
 
-      // Calculate only the difference since the last saved earnings
-      const newEarnings = stats.earnings + stats.rewards - previousEarnings;
-      const roundedNewEarnings = parseFloat(newEarnings.toFixed(2));
+    // Calculate today's earnings (stats.earnings + stats.rewards)
+    const todayEarnings = parseFloat(
+      (stats.earnings + stats.rewards.toFixed(2)) 
+    );
 
-      if (todayIndex >= 0) {
-        earningsData[todayIndex].earnings = parseFloat(
-          (previousEarnings + roundedNewEarnings).toFixed(2)
-        );
-      } else {
-        // No entry for today, so create one
-        earningsData.push({ date: currentDate, earnings: roundedNewEarnings });
-      }
-
-      await AsyncStorage.setItem('dailyEarnings', JSON.stringify(earningsData));
-      console.log('Daily earnings saved successfully:', earningsData);
-    } catch (error) {
-      console.error('Error saving daily earnings:', error);
+    if (todayIndex >=0) {
+      // Update today's earnings without adding previous values
+      earningsData[todayIndex].earnings = todayEarnings;
+    } else {
+      // Create a new entry for today
+      earningsData.push({ date: currentDate, earnings: todayEarnings });
     }
-  };
+
+    // Save the updated earnings data
+    await AsyncStorage.setItem('dailyEarnings', JSON.stringify(earningsData));
+    console.log('Daily earnings saved successfully:', earningsData);
+  } catch (error) {
+    console.error('Error saving daily earnings:', error);
+  }
+};
+
+
+
+
+
+
 
   const moveToNextQuestion = () => {
     // Save the quiz state locally

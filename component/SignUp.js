@@ -1,8 +1,21 @@
 import React, { useState, useContext } from 'react';
 import { QuizContext } from '../QuizContext';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Linking,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 
 
 
@@ -20,6 +33,8 @@ function SignUp() {
   const [firebaseVissible, setFirebaseVissible] = useState(true);
 
   const [loading, setLoading] = useState(false);
+   const [isChecked, setIsChecked] = useState(false);
+   const [privacyError, setPrivacyError] = useState(false);
 
   const {
     signUp,
@@ -34,7 +49,24 @@ function SignUp() {
   } = useContext(QuizContext);
 
 
+  const handleCheckBoxChange = () => {
+    setIsChecked(!isChecked);
+  };
+
+    const openPrivacyPolicy = () => {
+      Linking.openURL(
+        'https://ematech81.github.io/privacyPolicy/#privacy-policy'
+      );
+    };
+
+    const openTermsAndConditions = () => {
+      Linking.openURL(
+        'https://ematech81.github.io/privacyPolicy/#terms-and-conditions'
+      );
+    };
+
 const handleSignUp = async () => {
+  if (isChecked) {
   setEmailError('');
   setUsernameError('');
   setPasswordError('');
@@ -89,6 +121,12 @@ const handleSignUp = async () => {
   } finally {
     setLoading(false);
   }
+  } else {
+    setPrivacyError(
+      'Please agree to the Privacy Policy and Terms and Conditions.'
+    );
+  }
+  
 };
 
 
@@ -129,9 +167,7 @@ const handleSignUp = async () => {
                 Login Here
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-            >
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Text
                 style={{
                   marginVertical: 20,
@@ -139,7 +175,7 @@ const handleSignUp = async () => {
                   fontWeight: 'bold',
                 }}
               >
-               close
+                close
               </Text>
             </TouchableOpacity>
           </View>
@@ -209,6 +245,24 @@ const handleSignUp = async () => {
                 </Text>
               )}
             </View>
+            <View style={styles.checkboxContainer}>
+              {/* <CheckBox
+                value={isChecked}
+                onValueChange={handleCheckBoxChange}
+              /> */}
+              <Text style={styles.labelPrivacy}>
+                I agree to the{' '}
+                <Text style={styles.link} onPress={openPrivacyPolicy}>
+                  Privacy Policy
+                </Text>{' '}
+                and{' '}
+                <Text style={styles.link} onPress={openTermsAndConditions}>
+                  Terms and Conditions
+                </Text>
+                .
+              </Text>
+            </View>
+
             <TouchableOpacity style={styles.submit} onPress={handleSignUp}>
               <Text
                 style={{ fontWeight: 'bold', fontSize: 18, color: 'white' }}
@@ -216,6 +270,8 @@ const handleSignUp = async () => {
                 Sign Up
               </Text>
             </TouchableOpacity>
+            {privacyError && <Text>{setPrivacyError}</Text>}
+
             <View style={styles.prompt}>
               <Text style={styles.promptText1}>Already have an account?</Text>
               {loading ? (
@@ -247,17 +303,21 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   signUp: {
+    
+
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
     fontSize: 20,
   },
+ 
   input: {
-    width: '100%',
-    padding: 8,
+    height: 50,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
+    borderColor: '#dcdcdc',
+    borderRadius: 8,
+    paddingLeft: 15,
+    backgroundColor: '#f9f9f9',
   },
   label: {
     fontSize: 18,
@@ -265,17 +325,25 @@ const styles = StyleSheet.create({
     color: '#525252',
   },
   submit: {
-    width: '100%',
+   height:50,
+   width: "90%",
     padding: 6,
     marginVertical: '15',
     backgroundColor: '#60a5fa',
-    width: '90%',
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 8,
   },
   formWrapper: {
+    
+    
+    // padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
     backgroundColor: 'white',
     paddingVertical: 16,
     borderRadius: 10,
@@ -316,6 +384,21 @@ const styles = StyleSheet.create({
     left: '5%',
     right: '10%',
     zIndex: 10,
-    margin:'auto'
+    margin: 'auto',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    padding: 10,
+  },
+  labelPrivacy: {
+    marginLeft: 10,
+    color: '#34495e',
+  },
+  link: {
+    color: '#1A2D85',
+    textDecorationLine: 'underline',
   },
 });

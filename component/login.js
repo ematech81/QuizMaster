@@ -14,42 +14,41 @@ function Login() {
   const navigation = useNavigation();
   const { signIn } = useContext(QuizContext);
 
-  const handleSignIn = async () => {
-    setFirebaseError(''); // Clear any previous Firebase errors
 
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailPattern.test(email)) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address.');
-      return;
+
+const handleSignIn = async () => {
+  setFirebaseError(''); // Clear any previous errors
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(email)) {
+    Alert.alert('Invalid Email', 'Please enter a valid email address.');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    await signIn(email, password);
+    navigation.navigate('MainApp'); // Only navigate if login is successful
+  } catch (error) {
+    console.error('Login error:', error);
+
+    // Handle errors and set the appropriate message
+    if (error.code === 'auth/user-not-found') {
+      setFirebaseError('This email is not registered. Please sign up.');
+    } else if (error.code === 'auth/wrong-password') {
+      setFirebaseError('Incorrect password. Please try again.');
+    } else if (error.code === 'auth/invalid-email') {
+      setFirebaseError('Invalid email format. Please try again.');
+    } else {
+      setFirebaseError('Please Check Your Internet Connection.');
     }
+  } finally {
+    setLoading(false);
+  }
+};
 
-    try {
-      setLoading(true);
-      await signIn(email, password);
-      navigation.navigate('MainApp');
-    } catch (error) {
-      if (error.code === 'auth/user-not-found') {
-        setFirebaseError('This email is not registered. Please sign up.');
-        Alert.alert(
-          'User Not Found',
-          'This email is not registered. Please sign up.',
-          [{ text: 'Sign Up', onPress: () => navigation.navigate('SignUpScreen') }]
-        );
-      } else if (error.code === 'auth/wrong-password') {
-        setFirebaseError('Incorrect password. Please try again.');
-        Alert.alert('Incorrect Password', 'Please enter the correct password.');
-      } else if (error.code === 'auth/invalid-email') {
-        setFirebaseError('Invalid email format. Please try again.');
-        Alert.alert('Invalid Email', 'The email address format is incorrect.');
-      } else {
-        setFirebaseError('An error occurred. Please try again.');
-        console.error('Login error:', error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">

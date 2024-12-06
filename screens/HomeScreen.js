@@ -7,21 +7,36 @@ import { QuizContext } from '../QuizContext';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EarningsChart } from '../component/dailyChart';
+import { LinearGradient } from 'react-native-svg';
 
 
 
-const HomeScreen = ({navigation, route}) => {
-
-    const [dateTime, setDateTime] = useState({
+const HomeScreen = ({ navigation, route }) => {
+  const [dateTime, setDateTime] = useState({
     date: '',
     time: '',
-    });
-  
-  const { categories, setCurrentCategory, rewards, earnings, totalEarnings, startTimer, stopTimer, clearQuizState, loadStoredData,setQuestions, setCurrentQuestionIndex,setRemainingTime, fetchQuestions, logOut, user, username, stats} = useContext(QuizContext);
- 
-  
+  });
 
- 
+  const {
+    categories,
+    setCurrentCategory,
+    rewards,
+    earnings,
+    totalEarnings,
+    startTimer,
+    stopTimer,
+    clearQuizState,
+    loadStoredData,
+    setQuestions,
+    setCurrentQuestionIndex,
+    setRemainingTime,
+    fetchQuestions,
+    logOut,
+    user,
+    username,
+    stats,
+  } = useContext(QuizContext);
+
   useFocusEffect(
     React.useCallback(() => {
       startTimer(); // Start timer when screen is focused
@@ -31,8 +46,6 @@ const HomeScreen = ({navigation, route}) => {
       };
     }, [])
   );
-
-
 
   useEffect(() => {
     const updateTime = () => {
@@ -53,53 +66,49 @@ const HomeScreen = ({navigation, route}) => {
     const intervalId = setInterval(updateTime, 1000); // Update every second
 
     // Cleanup
-    return () => clearInterval(intervalId); 
+    return () => clearInterval(intervalId);
   }, []);
 
-
-  const handleSignOut = async() => {
+  const handleSignOut = async () => {
     await logOut();
-   }
-
-   const switchCategory = async (categoryName) => {
-  setCurrentCategory(categoryName);
-  setQuestions([]); // Clear previous questions
-  //  setCurrentQuestionIndex(0);
-  setRemainingTime(15); // Reset the timer for the new category
-
-  await fetchQuestions(categoryName); // Fetch new questions
-};
-
-  const handleCategorySelect = (categoryName) => {
-
-      if (!user) {
-    navigation.navigate('SignInScreen');
-  } else {
-    setCurrentCategory(categoryName); // Set the selected category in context
-    switchCategory(categoryName);
-    navigation.navigate('QuestionScreen',{categoryName}); // Navigate to the Question screen
-  }
-   
   };
 
-useEffect(() => {
-  if (route.params?.category) {
-    switchCategory(route.params.category);
-  }
-}, [route.params?.category]);
+  const switchCategory = async (categoryName) => {
+    setCurrentCategory(categoryName);
+    setQuestions([]); // Clear previous questions
+    //  setCurrentQuestionIndex(0);
+    setRemainingTime(15); // Reset the timer for the new category
+
+    await fetchQuestions(categoryName); // Fetch new questions
+  };
+
+  const handleCategorySelect = (categoryName) => {
+    if (!user) {
+      navigation.navigate('SignInScreen');
+    } else {
+      setCurrentCategory(categoryName); // Set the selected category in context
+      switchCategory(categoryName);
+      navigation.navigate('QuestionScreen', { categoryName }); // Navigate to the Question screen
+    }
+  };
+
+  useEffect(() => {
+    if (route.params?.category) {
+      switchCategory(route.params.category);
+    }
+  }, [route.params?.category]);
 
   const renderCategoryItem = ({ item }) => {
-  
-  return (
-    <TouchableOpacity
-      style={styles.categoryItem}
-    onPress={() => handleCategorySelect(item.name)}
+    return (
+      <TouchableOpacity
+        style={styles.categoryItem}
+        onPress={() => handleCategorySelect(item.name)}
       >
-      <Icon name={item.icon} size={30} color="green" strokeWidth='10' />
-      <Text style={styles.categoryText}>{item.name}</Text>
-    </TouchableOpacity>
-  );
-};
+        <Icon name={item.icon} size={30} color="green" strokeWidth="10" />
+        <Text style={styles.categoryText}>{item.name}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -212,7 +221,7 @@ useEffect(() => {
                 padding: 2,
                 flexDirection: 'row',
               }}
-              className=" h-full"
+              
             >
               <View
                 style={{

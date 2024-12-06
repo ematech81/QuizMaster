@@ -8,8 +8,8 @@ const AnsweredQuestions = ({navigation}) => {
   const [loadedGottenAnswers, setLoadedGottenAnswers] = useState([]);
   const [loadedMissedAnswers, setLoadedMissedAnswers] = useState([]);
   const [showGottenQuestions, setShowGottenQuestions] = useState(false);
-  const [showMissedQuestions, setShowMissedQuestions] = useState(false);
-  const [activeButton, setActiveButton] = useState(null);
+  const [showMissedQuestions, setShowMissedQuestions] = useState(true);
+  const [activeButton, setActiveButton] = useState('missed');
   const {
     username,
     fetchGottenAnswers,
