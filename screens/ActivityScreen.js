@@ -171,10 +171,10 @@ const ActivityScreen = ({navigation}) => {
         </View>
         {/* withdraw container */}
 
-        {/* <View>
+        <View>
            <Upload/>
            </View>
-          */}
+         
         {/* <View><ExternalApi/></View>  */}
       </ScrollView>
       <View>

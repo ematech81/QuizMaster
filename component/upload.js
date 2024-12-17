@@ -64,7 +64,7 @@ export default function Upload() {
   return (
     <View>
       <Text>Upload Question</Text>
-      <Button title="Upload Now" onPress={() => uploadCategoryQuestions('Music')} />
+      <Button title="Upload Now" onPress={() => uploadCategoryQuestions('Art')} />
      
       {/* Add more buttons for each category you want to upload */}
     </View>

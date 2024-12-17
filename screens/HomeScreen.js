@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         {/* user */}
-        {user && (
+        {user ? (
           <View
             style={{
               justifyContent: 'space-between',
@@ -123,25 +123,29 @@ const HomeScreen = ({ navigation, route }) => {
               marginTop: 10,
             }}
           >
-            <View
-              style={{
-                borderRadius: 100,
-                borderColor: '#4ca771',
-                width: 30,
-                height: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 2,
-                borderWidth: 3,
-                marginTop: 10,
-              }}
-            >
+            <View style={styles.usernameWrapper}>
               <Text style={styles.name}>
                 {username ? username.charAt(0).toUpperCase() : 'on'}
               </Text>
             </View>
             <Pressable onPress={handleSignOut}>
               <Text style={{ color: 'white' }}>Logout</Text>
+            </Pressable>
+          </View>
+        ) : (
+          <View
+            style={{
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: 'row',
+              marginTop: 10,
+            }}
+          >
+            <View style={styles.usernameWrapper}>
+              
+            </View>
+            <Pressable onPress={() => navigation.navigate('SignInScreen')}>
+              <Text style={{ color: 'white' }}>Login</Text>
             </Pressable>
           </View>
         )}
@@ -221,7 +225,6 @@ const HomeScreen = ({ navigation, route }) => {
                 padding: 2,
                 flexDirection: 'row',
               }}
-              
             >
               <View
                 style={{
@@ -355,6 +358,17 @@ const styles = StyleSheet.create({
     elevation: 5,
  fontWeight: 'bold'
   },
+  usernameWrapper:{
+                borderRadius: 100,
+                borderColor: '#4ca771',
+                width: 30,
+                height: 30,
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 2,
+                borderWidth: 3,
+                marginTop: 10,
+              },
   categoryHeader: {
     marginTop: 30,
     marginBottom: 8,

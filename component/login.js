@@ -39,10 +39,10 @@ const handleSignIn = async () => {
       setFirebaseError('This email is not registered. Please sign up.');
     } else if (error.code === 'auth/wrong-password') {
       setFirebaseError('Incorrect password. Please try again.');
-    } else if (error.code === 'auth/invalid-email') {
-      setFirebaseError('Invalid email format. Please try again.');
+    } else if (error.code === 'auth/invalid-credential') {
+      setFirebaseError('Either you enter wrong email or the email is not registered. If you have not registered, Kindly use the sign up button.');
     } else {
-      setFirebaseError('Please Check Your Internet Connection.');
+      setFirebaseError('An Error Occured. Please Try Again');
     }
   } finally {
     setLoading(false);

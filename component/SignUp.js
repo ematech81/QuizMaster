@@ -246,12 +246,9 @@ const handleSignUp = async () => {
               )}
             </View>
             <View style={styles.checkboxContainer}>
-              {/* <CheckBox
-                value={isChecked}
-                onValueChange={handleCheckBoxChange}
-              /> */}
+             
               <Text style={styles.labelPrivacy}>
-                I agree to the{' '}
+                 By clicking the sign up button, You agree to our{' '}
                 <Text style={styles.link} onPress={openPrivacyPolicy}>
                   Privacy Policy
                 </Text>{' '}
@@ -270,7 +267,7 @@ const handleSignUp = async () => {
                 Sign Up
               </Text>
             </TouchableOpacity>
-            {privacyError && <Text>{setPrivacyError}</Text>}
+           
 
             <View style={styles.prompt}>
               <Text style={styles.promptText1}>Already have an account?</Text>
@@ -398,7 +395,7 @@ const styles = StyleSheet.create({
     color: '#34495e',
   },
   link: {
-    color: '#1A2D85',
+    color: 'blue',
     textDecorationLine: 'underline',
   },
 });

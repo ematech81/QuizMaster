@@ -25,12 +25,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-const auth = getAuth(app) // For web, initialize the default Firebase auth instance
+// const auth = getAuth(app) // For web, initialize the default Firebase auth instance
   
-// // Initialize Firebase Auth with AsyncStorage persistence
-// const auth = initializeAuth(app, {
-//   persistence: getReactNativePersistence(AsyncStorage),
-// });
+// Initialize Firebase Auth with AsyncStorage persistence
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 
 export { db, auth };
 

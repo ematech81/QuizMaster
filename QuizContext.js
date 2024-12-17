@@ -83,7 +83,7 @@ const QuizProvider = ({ children }) => {
     };
 
     // Call the clearStorage function when the component mounts
-    // clearStorage()
+    clearStorage()
   }, []);
 
   // Sign-up function
@@ -132,7 +132,7 @@ const signIn = async (email, password) => {
     const userDoc = await getDoc(userDocRef);
 
     if (!userDoc.exists()) {
-      throw { code: 'auth/user-not-found' }; // Throwing a custom error for user not found
+      throw { code: 'auth/invalid-credential' }; // Throwing a custom error for user not found
     }
 
     const userData = userDoc.data();
@@ -567,7 +567,7 @@ const saveDailyEarnings = async () => {
 
     // Calculate today's earnings (stats.earnings + stats.rewards)
     const todayEarnings = parseFloat(
-      (stats.earnings + stats.rewards.toFixed(2)) 
+      (stats.earnings + stats.rewards) 
     );
 
     if (todayIndex >=0) {
